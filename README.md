@@ -3,5 +3,5 @@
 ```bash
 npm install
 
-# Note
+## Note
 uncomment .env file in .gitignore

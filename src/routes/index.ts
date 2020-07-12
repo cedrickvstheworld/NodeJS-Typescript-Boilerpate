@@ -1,10 +1,5 @@
-// Types
 import {Request, Response} from 'express'
 
-/**
- * Router Class
- * @public
- */
 class Router {
 
   public get = (request: Request, response: Response) => {

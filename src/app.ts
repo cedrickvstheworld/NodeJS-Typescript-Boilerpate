@@ -1,34 +1,19 @@
-/* Code Style Guide ****PEP8**** */
-
 /**
  * ** NOTE ** add .env on gitignore
  */
 // load .env file immediately
 require("dotenv").config({ path: `${__dirname}/../.env` })
 
-/**
- * imports
- */
-// Modules/Libs/Frameworks
 import express from "express"
 import SocketIO from "socket.io"
 import mongoose, { mongo } from "mongoose"
 import morgan from 'morgan'
 const fingerprint = require('express-fingerprint')
-
-/**
- * routers
- */
 import Router from './urls'
-
-/**
- * Types
- */
 import { Response, Request, Application,  NextFunction} from 'express'
+import indexRouter from './urls/index'
 
-/**
- * App class wrapper
- */
+
 class Main {
   // type declarations
   private app: Application
@@ -54,12 +39,10 @@ class Main {
 
   // initialize connection to mongodb
   private connectToDatabase() {
-    // mongodb configs
     mongoose.set("useUnifiedTopology", true)
     mongoose.set("useFindAndModify", false)
     mongoose.set("useCreateIndex", true)
     mongoose.set("useNewUrlParser", true)
-    // connect
     mongoose
       .connect(this.dbUrlString)
       .then((): void => {
@@ -96,28 +79,12 @@ class Main {
 
   // initialize routes
   private loadRouters() {
-    this.app.use('', Router.index())
+    this.app.use('', indexRouter)
   }
 
   // initialize server configurations
   private appConfig() {
     this.app.use(morgan("dev"))
-    // check if request.body has valid JSON object
-    // (remove this if you will work with multipart forms or other file formats such as xml, etc)
-    this.app.use(
-      express.json({
-        verify: (request: Request, response: Response, buf: any) => {
-          try {
-            JSON.parse(buf)
-          } catch (e) {
-            response
-              .status(400)
-              .json({ error: "request body has invalid JSON object" })
-            throw Error("invalid JSON")
-          }
-        }
-      })
-    )
     // restrict headers contents and methods
     // allowed all for development
     this.app.use((request: Request, response: Response, next: NextFunction) => {
@@ -150,7 +117,6 @@ class Main {
   }
 
 }
-
 
 // create server instance
 const main = new Main()
